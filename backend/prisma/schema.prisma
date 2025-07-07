@@ -13,5 +13,29 @@ model User{
   username String
   email String @unique
   password String
+  chat Chat[]
   createdAt DateTime @default(now())
+}
+
+model Chat{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId @unique  // here userId is basically the consultant ID because consultant is going to Create application 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+}
+
+model Message {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  userMessage String
+  chatId      String       @db.ObjectId
+  chat        Chat         @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  botMessages BotMessage[] // one-to-many relation
+}
+
+model BotMessage {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  option     String[]
+  botResponse    String
+  messageId  String   @db.ObjectId
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }

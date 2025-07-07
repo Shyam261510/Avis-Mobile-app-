@@ -1,12 +1,13 @@
+// src/routes/signup.ts
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../libs/prisma";
 import bcryptjs from "bcryptjs";
 
 const router = Router();
-const prisma = new PrismaClient();
 
-router.post("/", async (req: any, res: any) => {
+router.post("/", async (req: Request, res: Response): Promise<any> => {
   const { username, email, password } = req.body;
+  console.log({ username, email, password });
 
   if (!username || !email || !password) {
     return res.status(400).json({
@@ -56,4 +57,4 @@ router.post("/", async (req: any, res: any) => {
   }
 });
 
-export default router;
+export default router; // ✅ Confirm this is a Router

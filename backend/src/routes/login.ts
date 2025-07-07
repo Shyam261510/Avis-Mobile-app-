@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const router = Router();
 const prisma = new PrismaClient();
 
-router.post("/", async (req: any, res: any) => {
+router.post("/", async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
 
   if (!email || !password) {

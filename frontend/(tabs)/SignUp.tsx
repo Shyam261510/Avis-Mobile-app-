@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useTransition } from "react";
 import {
   SafeAreaView,
   View,
@@ -15,6 +15,28 @@ import axios from "axios";
 export default function SignUp() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+
+  const [isPending, startTransition] = useTransition();
+
+  function signupHandler() {
+    const { username, email, password, phone } = formData;
+    startTransition(async () => {
+      const res = await axios.post("http://192.168.1.8:8081/api/signup", {
+        username,
+        email,
+        password,
+        phone,
+      });
+      console.log(res.data);
+    });
+  }
   return (
     <SafeAreaView style={styles.container}>
       {/* Content */}
@@ -29,9 +51,13 @@ export default function SignUp() {
           {/* Input Fields */}
           <View style={styles.inputSection}>
             <TextInput
-              placeholder="Full name"
+              placeholder="Username"
               placeholderTextColor="#6B7280"
               style={styles.input}
+              value={formData.username}
+              onChangeText={(value) =>
+                setFormData((prev) => ({ ...prev, username: value }))
+              }
             />
             <TextInput
               placeholder="Email"
@@ -40,21 +66,37 @@ export default function SignUp() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={formData.email}
+              onChangeText={(value) =>
+                setFormData((prev) => ({ ...prev, email: value }))
+              }
             />
-
-            <PasswordInput />
             <TextInput
               placeholder="Phone"
               placeholderTextColor="#6B7280"
               style={styles.input}
               keyboardType="numeric" // shows numeric keypad
               maxLength={10}
+              value={formData.phone}
+              onChangeText={(value) =>
+                setFormData((prev) => ({ ...prev, phone: value }))
+              }
+            />
+
+            <PasswordInput
+              value={formData.password}
+              onChangeText={(value: any) =>
+                setFormData((prev) => ({ ...prev, password: value }))
+              }
             />
           </View>
 
           {/* Buttons */}
           <View style={styles.buttonSection}>
-            <TouchableOpacity style={styles.emailButton}>
+            <TouchableOpacity
+              style={styles.emailButton}
+              onPress={signupHandler}
+            >
               <Text style={styles.emailButtonText}>Create account</Text>
             </TouchableOpacity>
 
