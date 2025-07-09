@@ -12,6 +12,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import PasswordInput from "../componets/PasswordInput";
 import axios from "axios";
+import Toast from "react-native-toast-message";
+import Spinner from "../componets/Spinner";
 export default function SignUp() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -27,16 +29,42 @@ export default function SignUp() {
 
   function signupHandler() {
     const { username, email, password, phone } = formData;
+
     startTransition(async () => {
-      const res = await axios.post("http://192.168.1.8:8081/api/signup", {
-        username,
-        email,
-        password,
-        phone,
-      });
-      console.log(res.data);
+      try {
+        const res = await axios.post("http://192.168.1.12:8000/api/signup", {
+          username,
+          email,
+          password,
+          phone,
+        });
+
+        const { success, message, user } = res.data;
+
+        if (!success) {
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+          return;
+        }
+
+        Toast.show({
+          type: "success",
+          text1: message,
+        });
+
+        navigation.navigate("Login");
+      } catch (error: any) {
+        Toast.show({
+          type: "error",
+          text1: "Signup failed",
+          text2: error.response?.data?.message || error.message,
+        });
+      }
     });
   }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Content */}
@@ -95,9 +123,28 @@ export default function SignUp() {
           <View style={styles.buttonSection}>
             <TouchableOpacity
               style={styles.emailButton}
+              disabled={isPending}
               onPress={signupHandler}
             >
-              <Text style={styles.emailButtonText}>Create account</Text>
+              {isPending ? (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: 12,
+                  }}
+                >
+                  <Spinner />
+                  <Text style={styles.emailButtonText}>
+                    Creating Account...
+                  </Text>
+                </View>
+              ) : (
+                <Text style={styles.emailButtonText}>Create account</Text>
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity

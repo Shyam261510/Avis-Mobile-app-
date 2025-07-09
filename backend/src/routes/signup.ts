@@ -7,7 +7,6 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
   const { username, email, password } = req.body;
-  console.log({ username, email, password });
 
   if (!username || !email || !password) {
     return res.status(400).json({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useTransition } from "react";
 import {
   SafeAreaView,
   View,
@@ -11,10 +11,54 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import PasswordInput from "../componets/PasswordInput";
+import Toast from "react-native-toast-message";
+import Spinner from "../componets/Spinner";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [isPending, startTransition] = useTransition();
+  function loginHandler() {
+    const { email, password } = formData;
+
+    startTransition(async () => {
+      try {
+        const res = await axios.post("http://192.168.1.12:8000/api/login", {
+          email,
+          password,
+        });
+
+        const { success, message, token, user } = res.data;
+
+        if (!success) {
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+          return;
+        }
+        await AsyncStorage.setItem("authToken", token);
+        Toast.show({
+          type: "success",
+          text1: message,
+        });
+
+        navigation.navigate("Login");
+      } catch (error: any) {
+        Toast.show({
+          type: "error",
+          text1: "Signup failed",
+          text2: error.response?.data?.message || error.message,
+        });
+      }
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Content */}
@@ -37,14 +81,39 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={formData.email}
+              onChangeText={(value) =>
+                setFormData((prev) => ({ ...prev, email: value }))
+              }
             />
-            <PasswordInput />
+            <PasswordInput
+              value={formData.password}
+              onChangeText={(value: any) =>
+                setFormData((prev) => ({ ...prev, password: value }))
+              }
+            />
           </View>
 
           {/* Buttons */}
           <View style={styles.buttonSection}>
-            <TouchableOpacity style={styles.emailButton}>
-              <Text style={styles.emailButtonText}>Login</Text>
+            <TouchableOpacity style={styles.emailButton} onPress={loginHandler}>
+              {isPending ? (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: 12,
+                  }}
+                >
+                  <Spinner />
+                  <Text style={styles.emailButtonText}>Login...</Text>
+                </View>
+              ) : (
+                <Text style={styles.emailButtonText}>Login</Text>
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity

@@ -1,6 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import singup from "./routes/signup";
+import singupRouter from "./routes/signup";
+import loginRouter from "./routes/login";
+import createMessageRouter from "./routes/createMessage";
+import createBotPressUserRouter from "./routes/createBotPressUser";
 import cors from "cors";
 
 dotenv.config();
@@ -8,17 +11,22 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+
 app.use(
   cors({
-    origin: "http://localhost:8081",
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
+    origin: "http://192.168.1.12:8081/",
   })
 );
 
 const PORT = process.env.PORT!;
 
-app.use("/api/signup", singup);
+app.use("/api/signup", singupRouter);
+
+app.use("/api/login", loginRouter);
+
+app.use("/api/createMessage", createMessageRouter);
+
+app.use("/api/createBotPressUser", createBotPressUserRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
