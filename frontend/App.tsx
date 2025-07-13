@@ -1,39 +1,25 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// App.tsx
+import React from "react";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 import Toast from "react-native-toast-message";
-import Welcome from "./(tabs)/Welcome";
-import Login from "./(tabs)/Login";
-import SignUp from "./(tabs)/SignUp";
-const Stack = createNativeStackNavigator();
+import Navgation from "./componets/Navigation";
 
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   SignUp: undefined;
+  Home: undefined;
+  Chat: undefined;
+  ProfileScreen: undefined;
+  documentScreen: undefined;
 };
+
 export default function App() {
   return (
-    <>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+    <Provider store={store}>
+      <Navgation />
       <Toast />
-    </>
+    </Provider>
   );
 }
