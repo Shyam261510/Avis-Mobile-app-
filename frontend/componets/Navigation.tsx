@@ -34,7 +34,7 @@ const MainNavigator = () => {
           const token = await AsyncStorage.getItem("authToken");
 
           const response = await axios.get(
-            "http://192.168.1.13:8000/api/getUserInfo",
+            `${process.env.API_URL}/api/getUserInfo`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -44,6 +44,7 @@ const MainNavigator = () => {
           );
 
           const { success, user, message } = response.data;
+
           if (!success) {
             Toast.show({
               type: "error",

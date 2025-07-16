@@ -1,17 +1,12 @@
-import { Router, Request, Response } from "express";
 import { prisma } from "../libs/prisma";
 import axios, { AxiosError } from "axios";
 
-const router = Router();
-
-router.post("/", async (req: Request, res: Response): Promise<any> => {
-  const { userId, username } = req.body;
-
+async function createBotPressUser(userId: string, username: string) {
   if (!userId || !username) {
-    return res.status(400).json({
+    return {
       success: false,
       message: "Invalid input. 'userId' and 'username' are required.",
-    });
+    };
   }
 
   try {
@@ -21,10 +16,10 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
     });
 
     if (!existingUser) {
-      return res.status(404).json({
+      return {
         success: false,
         message: "User not found in the database.",
-      });
+      };
     }
 
     // Step 2: Create BotPress user
@@ -45,13 +40,13 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
         response: err.response?.data,
       });
 
-      return res.status(502).json({
+      return {
         success: false,
         message: "BotPress user creation failed.",
         ...(process.env.NODE_ENV === "development" && {
           debug: err.response?.data || err.message,
         }),
-      });
+      };
     }
 
     const botPressKey = botPressUserResponse.data.key;
@@ -65,13 +60,13 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
     } catch (error) {
       console.error("Failed to update user with BotPress key:", error);
 
-      return res.status(500).json({
+      return {
         success: false,
         message: "Could not save BotPress key to database.",
         ...(process.env.NODE_ENV === "development" && {
           debug: (error as Error).message,
         }),
-      });
+      };
     }
 
     // Step 4: Create conversation in BotPress
@@ -93,30 +88,29 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
         response: err.response?.data,
       });
 
-      return res.status(502).json({
+      return {
         success: false,
         message: "Failed to create conversation in BotPress.",
         ...(process.env.NODE_ENV === "development" && {
           debug: err.response?.data || err.message,
         }),
-      });
+      };
     }
 
     // ✅ Everything went well
-    return res.status(200).json({
+    return {
       success: true,
       message: "You're ready to start a conversation with 🤖 Stuvis!",
-    });
+    };
   } catch (error: unknown) {
     console.error("Unexpected server error during setup:", error);
-    return res.status(500).json({
+    return {
       success: false,
       message: "Unexpected server error. Please try again later.",
       ...(process.env.NODE_ENV === "development" && {
         debug: (error as Error).message,
       }),
-    });
+    };
   }
-});
-
-export default router;
+}
+export default createBotPressUser;

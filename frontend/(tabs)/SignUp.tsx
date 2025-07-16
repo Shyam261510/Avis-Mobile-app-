@@ -32,7 +32,7 @@ export default function SignUp() {
 
     startTransition(async () => {
       try {
-        const res = await axios.post("http://192.168.1.12:8000/api/signup", {
+        const res = await axios.post(`${process.env.API_URL}/api/signup`, {
           username,
           email,
           password,

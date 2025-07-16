@@ -1,10 +1,9 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../libs/prisma"; // Prisma client for DB access
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
@@ -41,6 +40,7 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
       id: user.id,
       email: user.email,
       username: user.username,
+      botPressUserKey: user.botPressUserKey,
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_CODE!, {
@@ -57,11 +57,6 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
       success: true,
       message: "Login successful",
       token,
-      user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      },
     });
   } catch (error) {
     console.error("Login Error:", error);

@@ -4,6 +4,30 @@ export interface UserInfo {
   id: string;
   email: string;
   username: string;
+  botPressUserKey?: string;
+  createdAt: Date;
+  chat: Chat[];
+}
+
+export interface Chat {
+  id: string;
+  userId: string;
+  user: UserInfo;
+  messages: Message[];
+}
+
+export interface Message {
+  id: string;
+  userMessage: string;
+  botMessages: BotMessage[];
+  chatId: string;
+  options?: string[];
+  chat: Chat;
+}
+export interface BotMessage {
+  id: string;
+  option: string[];
+  botResponse: string;
 }
 
 const initialState = {
