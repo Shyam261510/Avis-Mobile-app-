@@ -9,6 +9,7 @@ const router = Router();
 
 // Route: POST /signup - Handles user registration
 router.post("/", async (req: Request, res: Response): Promise<any> => {
+  console.log("Calling Sign Up route");
   try {
     // Destructure required fields from the request body
     const { username, email, password } = req.body;

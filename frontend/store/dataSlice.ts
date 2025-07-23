@@ -21,7 +21,6 @@ export interface Message {
   userMessage: string;
   botMessages: BotMessage[];
   chatId: string;
-  options?: string[];
   chat: Chat;
 }
 export interface BotMessage {

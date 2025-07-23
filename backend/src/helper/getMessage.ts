@@ -4,7 +4,7 @@ import axios from "axios";
 async function getMessages(
   id: string,
   key: string,
-  delayMs: number = 5000
+  delayMs: number = 10000
 ): Promise<any> {
   // Add delay before making the API call
   await new Promise((resolve) => setTimeout(resolve, delayMs));

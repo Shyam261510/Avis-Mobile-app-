@@ -33,9 +33,9 @@ export default function SignUp() {
     startTransition(async () => {
       try {
         const res = await axios.post(`${process.env.API_URL}/api/signup`, {
-          username,
-          email,
-          password,
+          username: String(username).trim(),
+          email: String(email).trim(),
+          password: String(password).trim(),
           phone,
         });
 

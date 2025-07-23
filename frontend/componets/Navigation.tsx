@@ -32,7 +32,6 @@ const MainNavigator = () => {
       const fetchUser = async () => {
         try {
           const token = await AsyncStorage.getItem("authToken");
-
           const response = await axios.get(
             `${process.env.API_URL}/api/getUserInfo`,
             {

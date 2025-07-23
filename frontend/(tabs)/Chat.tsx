@@ -23,6 +23,7 @@ import {
   Chat as ChatType,
   Message,
 } from "../store/dataSlice";
+import TypingIndicator from "../componets/TypingIndicator";
 
 const Chat = () => {
   const navigation =
@@ -39,14 +40,28 @@ const Chat = () => {
       const res = await axios.get(
         `${process.env.API_URL}/api/getMessages?userId=${userInfo.id}`
       );
+      const userChats = res.data.chats;
+      const updatedChats: Message[] = userChats
+        .map((chat: any) => {
+          return chat.messages.map((message: any) => {
+            return {
+              id: message.id,
+              userMessage: message.userMessage,
+              botMessages: message.botMessages,
+              chatId: chat.id,
+              chat,
+            };
+          });
+        })
+        .flat();
 
-      // setMessages(updatedMessages);
+      setMessages(updatedChats);
     });
   };
 
   useEffect(() => {
     getMessage();
-  }, []);
+  }, [userInfo.id]);
   async function sendMessage() {
     try {
       await axios.post(`${process.env.API_URL}/api/createMessage`, {
@@ -78,20 +93,19 @@ const Chat = () => {
           },
         ],
         chatId: new Date().toLocaleString(),
-        options: [],
         chat: {} as ChatType,
       },
     ]);
     setMessage("");
     await sendMessage();
   }
-  if (isPending) {
-    return (
-      <View>
-        <Text>Loading..</Text>
-      </View>
-    );
-  }
+  // if (isPending) {
+  //   return (
+  //     <View>
+  //       <Text>Loading..</Text>
+  //     </View>
+  //   );
+  // }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -111,7 +125,6 @@ const Chat = () => {
 
         {/* Chat Messages */}
         <ScrollView contentContainerStyle={styles.chatContainer}>
-          {/* Assistant message */}
           {messages.length === 0 ? (
             <View
               style={{
@@ -126,47 +139,6 @@ const Chat = () => {
           ) : (
             messages.map((messageInfo: Message) => (
               <View key={messageInfo.id}>
-                <View style={styles.messageRow}>
-                  <ImageBackground
-                    source={{
-                      uri: "https://lh3.googleusercontent.com/aida-public/AB6AXuBnpUDZHXeGpF4ZhnOa4ldq7nSzkzMTZKXqV0z93win-m-r5lwkybP2Zy1A5s8aqRRxAw4nZfbDL_VNOdwIEIPEelZ9K9UWrLQ3XzQhuEi_3ezH-F-JcKQoRn7sYtmNsrHC0FBsjVeog2GD92XktPWYiQCLqMRfpMZkoykNpZY34YK18TglVBC1QfelBpMRmOGwfQfMeGJWcf_6shTucX9X6hA6T55_7JEvgmG2OE0rmoYN8mP1I3g-omhF7DA6uoRD6L9c6dCj_5PC",
-                    }}
-                    style={styles.avatar}
-                    imageStyle={{ borderRadius: 20 }}
-                  />
-
-                  <View style={styles.messageBubbleLeft}>
-                    <Text style={styles.sender}>AVIS Assistant</Text>
-
-                    <Text style={styles.messageTextLeft}>
-                      {messageInfo.botMessages[0].botResponse}
-                    </Text>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        gap: 10,
-                        marginTop: 12,
-                      }}
-                    >
-                      {messageInfo.botMessages[0].option.map(
-                        (value: string, index) => (
-                          <Text
-                            key={index}
-                            style={{
-                              borderWidth: 1,
-                              padding: 4,
-                              borderRadius: 5,
-                            }}
-                          >
-                            {value}
-                          </Text>
-                        )
-                      )}
-                    </View>
-                  </View>
-                </View>
-
                 {/* User message */}
                 <View
                   style={[styles.messageRow, { justifyContent: "flex-end" }]}
@@ -186,6 +158,55 @@ const Chat = () => {
                     imageStyle={{ borderRadius: 20 }}
                   />
                 </View>
+                {/* Assistant message */}
+                <View style={styles.messageRow}>
+                  <ImageBackground
+                    source={{
+                      uri: "https://lh3.googleusercontent.com/aida-public/AB6AXuBnpUDZHXeGpF4ZhnOa4ldq7nSzkzMTZKXqV0z93win-m-r5lwkybP2Zy1A5s8aqRRxAw4nZfbDL_VNOdwIEIPEelZ9K9UWrLQ3XzQhuEi_3ezH-F-JcKQoRn7sYtmNsrHC0FBsjVeog2GD92XktPWYiQCLqMRfpMZkoykNpZY34YK18TglVBC1QfelBpMRmOGwfQfMeGJWcf_6shTucX9X6hA6T55_7JEvgmG2OE0rmoYN8mP1I3g-omhF7DA6uoRD6L9c6dCj_5PC",
+                    }}
+                    style={styles.avatar}
+                    imageStyle={{ borderRadius: 20 }}
+                  />
+
+                  <View style={styles.messageBubbleLeft}>
+                    <Text style={styles.sender}>AVIS Assistant</Text>
+
+                    <Text style={styles.messageTextLeft}>
+                      {messageInfo.botMessages[0].botResponse ===
+                      "typing..." ? (
+                        <TypingIndicator />
+                      ) : (
+                        messageInfo.botMessages[0].botResponse
+                      )}
+                    </Text>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        gap: 10,
+                        marginTop: 12,
+                      }}
+                    >
+                      {messageInfo.botMessages[0].option.map(
+                        (value: string, index) => (
+                          <Text
+                            key={index}
+                            style={{
+                              borderWidth: 1,
+                              padding: 4,
+                              borderRadius: 5,
+                            }}
+                            onPress={() => {
+                              setMessage(value);
+                            }}
+                          >
+                            {value}
+                          </Text>
+                        )
+                      )}
+                    </View>
+                  </View>
+                </View>
               </View>
             ))
           )}
@@ -195,7 +216,7 @@ const Chat = () => {
         <View style={styles.inputContainer}>
           <ImageBackground
             source={{
-              uri: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiNomBPA2sm0-tmLMJPerPesPze2HkCd7gMhP4LSxRK-_6df2IwH6z-QHsussS1kjZyMYNlhP4UbNT4bvL2KDgOhie3bh59Q1KXEfxVOuAAlezjmJNlCqCtW7_ISoHYMWuOgAMZPTTC1_REo63g5hrMSLL8si2GUlNbugbkro1LHCqux6tRcJvrYyYYoEBscMY3urjHS7QH2A5DghnKPo0a5mJrNZHCJqPCN0P3Y3jzrORVnKtJNYc3N1ommPLCDJZnIo3nWpa-6sZ",
+              uri: "https://lh3.googleusercontent.com/aida-public/AB6AXuAnT0eUton2bphDNZkQtx94HJGZAtsLo543ImA740oOIRCA3S5CdImDGWqxOLs8c4SUKQ_J7601Rx5Xh-rKi5zrHO18aGBB3r64khEx3rE5A0NpOzTvqVJR-WnZ3YQeCSdtwjgNylVA8U01lxUXUNTFIV_YES3kWaklgwLRRpPJpIQH1AOukqrk6471lDwp0ET13u4f8vz4ispc5WfovLoytIB-7Kk8qEciN1ao50R2gRh_l8y5uwM9gzyrFmY75Aj5aFAOlvlhz4z5",
             }}
             style={styles.avatar}
             imageStyle={{ borderRadius: 20 }}

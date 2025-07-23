@@ -22,6 +22,7 @@ export default function LoginScreen() {
     email: "",
     password: "",
   });
+
   const [isPending, startTransition] = useTransition();
   function loginHandler() {
     const { email, password } = formData;
