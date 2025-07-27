@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
+  console.log("Calling login route");
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -51,6 +52,7 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({

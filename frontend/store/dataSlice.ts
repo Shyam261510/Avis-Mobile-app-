@@ -29,8 +29,18 @@ export interface BotMessage {
   botResponse: string;
 }
 
+export interface Document {
+  id: string;
+  fileName: string;
+  size: number;
+  uri: string;
+  documentTitle: string;
+}
+
 const initialState = {
   userInfo: {} as UserInfo,
+  isFetch: false as boolean,
+  document: [] as Document[],
 };
 
 const dataSlice = createSlice({
@@ -40,8 +50,14 @@ const dataSlice = createSlice({
     setUserInfo: (state, action: PayloadAction<UserInfo>) => {
       state.userInfo = action.payload;
     },
+    setIsFetch: (state) => {
+      state.isFetch = !state.isFetch;
+    },
+    setDocuments: (state, action: PayloadAction<Document[]>) => {
+      state.document = action.payload;
+    },
   },
 });
-export const { setUserInfo } = dataSlice.actions;
+export const { setUserInfo, setIsFetch, setDocuments } = dataSlice.actions;
 
 export default dataSlice.reducer;

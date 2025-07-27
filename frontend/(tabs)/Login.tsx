@@ -53,7 +53,7 @@ export default function LoginScreen() {
       } catch (error: any) {
         Toast.show({
           type: "error",
-          text1: "Signup failed",
+          text1: "Sigin failed",
           text2: error.response?.data?.message || error.message,
         });
       }

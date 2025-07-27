@@ -3,9 +3,10 @@ import { Router, Request, Response } from "express";
 
 const router = Router();
 router.get("/", async (req: Request, res: Response): Promise<any> => {
+  console.log("calling /api/getMessages");
   try {
     const userId = req.query.userId as string;
-    console.log(userId);
+ 
 
     if (!userId) {
       return res.json({ success: false, message: "Missing applicantId" });

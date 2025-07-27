@@ -6,6 +6,7 @@ import getMessages from "../helper/getMessage";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
+  console.log("calling /api/createMessage");
   const { userId, message, botPressUserKey } = req.body;
 
   if (!userId || !message || !botPressUserKey) {

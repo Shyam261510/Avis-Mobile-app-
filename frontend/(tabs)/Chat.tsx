@@ -37,6 +37,9 @@ const Chat = () => {
 
   const getMessage = () => {
     startTransition(async () => {
+      if (Object.entries(userInfo).length === 0) {
+        return;
+      }
       const res = await axios.get(
         `${process.env.API_URL}/api/getMessages?userId=${userInfo.id}`
       );
@@ -64,7 +67,7 @@ const Chat = () => {
   }, [userInfo.id]);
   async function sendMessage() {
     try {
-      await axios.post(`${process.env.API_URL}/api/createMessage`, {
+      await axios.post(`${process.env.API_URL!}/api/createMessage`, {
         userId: userInfo.id,
         message,
         botPressUserKey: userInfo.botPressUserKey,

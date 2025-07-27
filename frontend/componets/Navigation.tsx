@@ -1,16 +1,14 @@
 // MainNavigator.tsx
-import React, { useEffect, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useDispatch } from "react-redux";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 import { setUserInfo } from "../store/dataSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
 
 // Screens
 import Welcome from "../(tabs)/Welcome";
@@ -26,12 +24,16 @@ const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
+  const isFetch = useSelector((state: RootState) => state.dataSlice.isFetch);
 
   useEffect(() => {
     startTransition(() => {
       const fetchUser = async () => {
         try {
           const token = await AsyncStorage.getItem("authToken");
+          if (!token) {
+            return;
+          }
           const response = await axios.get(
             `${process.env.API_URL}/api/getUserInfo`,
             {
@@ -64,7 +66,7 @@ const MainNavigator = () => {
 
       fetchUser();
     });
-  }, [dispatch]);
+  }, [dispatch, isFetch]);
 
   return (
     <NavigationContainer>

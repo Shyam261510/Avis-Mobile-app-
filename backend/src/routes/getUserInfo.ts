@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response): Promise<any> => {
+  console.log("Calling get user route");
   try {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {

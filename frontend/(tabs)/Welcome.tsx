@@ -9,7 +9,7 @@ type WelcomeScreenNavigationProp =
 
 export default function Welcome() {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
-  console.log(process.env.API_URL);
+
   return (
     <View style={styles.fullScreen}>
       <View style={styles.container}>
