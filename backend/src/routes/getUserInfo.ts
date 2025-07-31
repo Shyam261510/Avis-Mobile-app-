@@ -1,6 +1,15 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
+interface JWTPayload {
+  id: string;
+  email: string;
+  username: string;
+  botPressUserKey: string;
+  iat: number; // issued at
+  exp: number; // expiration time
+}
+
 const router = Router();
 
 router.get("/", async (req: Request, res: Response): Promise<any> => {
@@ -18,12 +27,22 @@ router.get("/", async (req: Request, res: Response): Promise<any> => {
       ? authHeader.split(" ")[1]
       : authHeader;
 
-    const userInfo = jwt.verify(token, process.env.JWT_CODE!);
+    let isExpired = false;
+    const decoded = jwt.decode(token) as JWTPayload;
+    const { exp } = decoded;
 
-    res.status(200).json({ success: true, user: userInfo });
+    if (Date.now() >= exp * 1000) {
+      isExpired = true;
+    }
+    if (isExpired) {
+      return res.status(200).json({ success: true, user: {} });
+    }
+
+    const userInfo = jwt.verify(token, process.env.JWT_CODE!);
+    return res.status(200).json({ success: true, user: userInfo });
   } catch (error) {
     console.error("JWT verification failed:", error);
-    res
+    return res
       .status(403)
       .json({ success: false, message: "Invalid or expired token" });
   }

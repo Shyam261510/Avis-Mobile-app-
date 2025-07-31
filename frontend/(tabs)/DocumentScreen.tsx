@@ -13,7 +13,6 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  Dimensions,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
