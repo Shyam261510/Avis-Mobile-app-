@@ -20,6 +20,7 @@ import axios from "axios";
 import Spinner from "../componets/Spinner";
 import { Document, setDocuments } from "../store/dataSlice";
 import Pdf from "react-native-pdf";
+import * as WebBrowser from "expo-web-browser";
 
 interface UploadedFile {
   fileName: string;
@@ -350,6 +351,12 @@ const DocumentScreen = () => {
     }
   }
 
+  const openPDF = async () => {
+    await WebBrowser.openBrowserAsync(
+      "https://ik.imagekit.io/fcuhugcgk/Murli_Soft_Ys9bgnBK1y.pdf"
+    );
+  };
+
   const totalFields = sections.reduce((acc, s) => acc + s.fields.length, 0);
   const totalCompleted = sections.reduce((acc, s) => acc + s.completedCount, 0);
   return (
@@ -404,13 +411,8 @@ const DocumentScreen = () => {
                           {formatFileSize(field.file.size)}
                         </Text>
                         {field.file.uri && uploadDocumentsInfo.length > 0 ? (
-                          <TouchableOpacity
-                            onPress={() => setIsOpen(field.title)}
-                          >
+                          <TouchableOpacity onPress={openPDF}>
                             <Text style={styles.uploadedText}>Open</Text>
-                            {isOpen === field.title && (
-                              <Pdf source={{ uri: field.file.uri }} />
-                            )}
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity

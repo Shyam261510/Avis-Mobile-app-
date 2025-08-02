@@ -17,12 +17,14 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
     origin: process.env.API_URL!,
     credentials: true,
   })
 );
+
 
 const PORT = process.env.PORT!;
 

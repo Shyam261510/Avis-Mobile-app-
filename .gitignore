@@ -1,0 +1,44 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv files
+.env
+.env.*  # for files like .env.local, .env.production
+
+# Ignore .env files in frontend and backend
+/frontend/.env
+/frontend/.env.*
+/backend/.env
+/backend/.env.*
+
+# Compiled files
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Misc
+*.swp

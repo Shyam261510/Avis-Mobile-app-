@@ -59,6 +59,12 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
       success: true,
       message: "Login successful",
       token,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        botPressUserKey: user.botPressUserKey,
+      },
     });
   } catch (error) {
     console.error("Login Error:", error);

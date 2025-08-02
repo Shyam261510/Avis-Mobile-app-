@@ -9,8 +9,6 @@ import { setUserInfo } from "../store/dataSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Screens
 import Welcome from "../(tabs)/Welcome";
@@ -20,7 +18,6 @@ import HomeScreen from "../(tabs)/Home";
 import Chat from "../(tabs)/Chat";
 import ProfileScreen from "../(tabs)/ProfileScreen";
 import DocumentScreen from "../(tabs)/DocumentScreen";
-import { RootStackParamList } from "../App";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +25,6 @@ const MainNavigator = () => {
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const isFetch = useSelector((state: RootState) => state.dataSlice.isFetch);
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     startTransition(() => {
@@ -57,9 +52,6 @@ const MainNavigator = () => {
               text1: message,
             });
             return;
-          }
-          if (Object.entries(user).length === 0) {
-            navigation.navigate("Login");
           }
 
           dispatch(setUserInfo(user));
@@ -110,11 +102,11 @@ const MainNavigator = () => {
           options={{ headerShown: false }}
         />
 
-        {/* <Stack.Screen
+        <Stack.Screen
           name="documentScreen"
           component={DocumentScreen}
           options={{ headerShown: false }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

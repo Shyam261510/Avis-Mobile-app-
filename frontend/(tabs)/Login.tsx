@@ -15,9 +15,12 @@ import Toast from "react-native-toast-message";
 import Spinner from "../componets/Spinner";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../store/dataSlice";
 export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -48,7 +51,7 @@ export default function LoginScreen() {
           type: "success",
           text1: message,
         });
-
+        dispatch(setUserInfo(user));
         navigation.navigate("Home");
       } catch (error: any) {
         Toast.show({

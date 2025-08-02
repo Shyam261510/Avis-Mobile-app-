@@ -3,13 +3,24 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { RootStackParamList } from "../App";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 type WelcomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
 export default function Welcome() {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
+  const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
 
+  const getStartedHandler = () => {
+    if (!userInfo || Object.entries(userInfo).length === 0) {
+      navigation.push("Login");
+      return;
+    }
+
+    navigation.push("Home");
+  };
   return (
     <View style={styles.fullScreen}>
       <View style={styles.container}>
@@ -24,10 +35,7 @@ export default function Welcome() {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.ctaButton}
-          onPress={() => navigation.navigate("Login")}
-        >
+        <TouchableOpacity style={styles.ctaButton} onPress={getStartedHandler}>
           <Text style={styles.ctaText}>Get Started</Text>
         </TouchableOpacity>
       </View>
