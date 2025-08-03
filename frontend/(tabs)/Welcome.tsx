@@ -14,12 +14,12 @@ export default function Welcome() {
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
 
   const getStartedHandler = () => {
-    if (!userInfo || Object.entries(userInfo).length === 0) {
-      navigation.push("Login");
-      return;
-    }
+    // if (!userInfo || Object.entries(userInfo).length === 0) {
+    //   navigation.push("Login");
+    //   return;
+    // }
 
-    navigation.push("Home");
+    navigation.push("ProfileSetup");
   };
   return (
     <View style={styles.fullScreen}>

@@ -1,5 +1,5 @@
 // MainNavigator.tsx
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useTransition } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ import HomeScreen from "../(tabs)/Home";
 import Chat from "../(tabs)/Chat";
 import ProfileScreen from "../(tabs)/ProfileScreen";
 import DocumentScreen from "../(tabs)/DocumentScreen";
+import ProfileSetup from "../(tabs)/ProfleSetup";
 
 const Stack = createNativeStackNavigator();
 
@@ -105,6 +106,11 @@ const MainNavigator = () => {
         <Stack.Screen
           name="documentScreen"
           component={DocumentScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfileSetup"
+          component={ProfileSetup}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
