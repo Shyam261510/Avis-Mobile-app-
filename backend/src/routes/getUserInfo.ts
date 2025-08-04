@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { prisma } from "../libs/prisma";
 
 interface JWTPayload {
   id: string;
@@ -38,7 +39,15 @@ router.get("/", async (req: Request, res: Response): Promise<any> => {
       return res.status(200).json({ success: true, user: {} });
     }
 
-    const userInfo = jwt.verify(token, process.env.JWT_CODE!);
+    let userInfo = jwt.verify(token, process.env.JWT_CODE!) as JWTPayload;
+
+    const profileInfo = await prisma.profileInfo.findFirst({
+      where: {
+        id: userInfo.id,
+      },
+    });
+    userInfo = { ...userInfo, ...profileInfo };
+
     return res.status(200).json({ success: true, user: userInfo });
   } catch (error) {
     console.error("JWT verification failed:", error);

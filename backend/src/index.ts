@@ -8,6 +8,7 @@ import getUserInfo from "./routes/getUserInfo";
 import imageKitAuthRouter from "./routes/imagekit_auth";
 import uploadDocumentRouter from "./routes/uploadDocument";
 import getDocumentRouter from "./routes/getUploadedDocument";
+import createProfileRouter from "./routes/create-profile";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -24,7 +25,6 @@ app.use(
     credentials: true,
   })
 );
-
 
 const PORT = process.env.PORT!;
 
@@ -43,6 +43,8 @@ app.use("/api/imageKitAuth", imageKitAuthRouter);
 app.use("/api/uploadDocument", uploadDocumentRouter);
 
 app.use("/api/getDocuments", getDocumentRouter);
+
+app.use("/api/create-profile", createProfileRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

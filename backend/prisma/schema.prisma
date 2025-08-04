@@ -16,9 +16,24 @@ model User{
   chat Chat[]
   botPressUserKey String?
   document Document[]
+  profileInfo ProfileInfo? @relation("ProfileInfo")
   createdAt DateTime @default(now())
 }
-
+model ProfileInfo{
+   id String @id @default(auto()) @map("_id") @db.ObjectId
+   DOB              String
+  country           String
+  destination       String
+  field_of_Interest String
+  education         String
+  GPA               String
+  experience        String
+  budget            String
+  userId            String @unique @db.ObjectId
+  user              User @relation("ProfileInfo",references: [id],fields: [userId])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
 model Chat{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId @unique  // here userId is basically the consultant ID because consultant is going to Create application 

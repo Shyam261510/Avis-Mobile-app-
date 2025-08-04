@@ -37,7 +37,7 @@ export default function LoginScreen() {
           password,
         });
 
-        const { success, message, token, user } = res.data;
+        const { success, message, token, user, profile_info } = res.data;
 
         if (!success) {
           Toast.show({
@@ -47,11 +47,15 @@ export default function LoginScreen() {
           return;
         }
         await AsyncStorage.setItem("authToken", token);
+      
         Toast.show({
           type: "success",
           text1: message,
         });
         dispatch(setUserInfo(user));
+        if(!profile_info){
+          navigation.navigate("ProfileSetup")
+        }
         navigation.navigate("Home");
       } catch (error: any) {
         Toast.show({

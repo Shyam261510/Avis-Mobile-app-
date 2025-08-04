@@ -13,6 +13,7 @@ export type RootStackParamList = {
   Chat: undefined;
   ProfileScreen: undefined;
   documentScreen: undefined;
+  ProfileSetup: undefined;
 };
 
 export default function App() {

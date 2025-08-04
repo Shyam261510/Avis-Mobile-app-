@@ -6,6 +6,7 @@ export interface UserInfo {
   username: string;
   botPressUserKey?: string;
   createdAt: Date;
+  profileInfo: ProfileSetup;
   chat: Chat[];
 }
 
@@ -35,6 +36,17 @@ export interface Document {
   size: number;
   uri: string;
   documentTitle: string;
+}
+export interface ProfileSetup {
+  id: string;
+  DOB: string;
+  country: string;
+  destination: string;
+  field_of_Interest: string;
+  education: string;
+  GPA: string;
+  experience: string;
+  budget: string;
 }
 
 const initialState = {

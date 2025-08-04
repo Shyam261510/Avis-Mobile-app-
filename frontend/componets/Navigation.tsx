@@ -19,7 +19,7 @@ import Chat from "../(tabs)/Chat";
 import ProfileScreen from "../(tabs)/ProfileScreen";
 import DocumentScreen from "../(tabs)/DocumentScreen";
 import ProfileSetup from "../(tabs)/ProfleSetup";
-
+import BotLoader from "./BotLoader";
 const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
@@ -68,7 +68,9 @@ const MainNavigator = () => {
       fetchUser();
     });
   }, [dispatch, isFetch]);
-
+  if (isPending) {
+    return <BotLoader variant="dots" />;
+  }
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
