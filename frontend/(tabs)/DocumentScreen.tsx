@@ -21,6 +21,7 @@ import Spinner from "../componets/Spinner";
 import { Document, setDocuments } from "../store/dataSlice";
 import Pdf from "react-native-pdf";
 import * as WebBrowser from "expo-web-browser";
+import isUserLogin from "../hook/isUserLogin";
 
 interface UploadedFile {
   fileName: string;
@@ -44,6 +45,7 @@ interface DocumentSection {
   completedCount: number;
 }
 const DocumentScreen = () => {
+  isUserLogin();
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
@@ -128,8 +130,6 @@ const DocumentScreen = () => {
       ],
     },
   ]);
-
-  const [isOpen, setIsOpen] = useState<string | null>(null);
 
   const uploadDocumentsInfo = useSelector(
     (state: RootState) => state.dataSlice.document

@@ -12,6 +12,9 @@ type WelcomeScreenNavigationProp =
 export default function Welcome() {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
+  const profileInfo = useSelector(
+    (state: RootState) => state.dataSlice.profileInfo
+  );
 
   const getStartedHandler = () => {
     if (!userInfo || Object.entries(userInfo).length === 0) {
@@ -19,7 +22,7 @@ export default function Welcome() {
       return;
     }
 
-    if (!userInfo.profileInfo) {
+    if (!profileInfo) {
       navigation.push("ProfileSetup");
       return;
     }

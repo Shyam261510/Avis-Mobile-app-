@@ -90,7 +90,7 @@ export default function BotLoader({
   // dots variant
   return (
     <View style={styles.row}>
-      <Bot size={iconSize} color="#6366f1" />
+      <Bot size={iconSize} color="#ff6600" />
       <Text style={styles.messageText}>
         {message}
         {".".repeat(dotCount)}

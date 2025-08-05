@@ -13,8 +13,10 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import Navbar from "../componets/Navbar";
+import isUserLogin from "../hook/isUserLogin";
 
 const HomeScreen = () => {
+  isUserLogin();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 

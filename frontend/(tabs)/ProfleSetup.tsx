@@ -18,6 +18,10 @@ import Toast from "react-native-toast-message";
 import { RootState } from "../store/store";
 import BotLoader from "../componets/BotLoader";
 import { setIsFetch } from "../store/dataSlice";
+import { RootStackParamList } from "../App";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import isUserLogin from "../hook/isUserLogin";
 
 type Message = {
   id: string;
@@ -41,7 +45,7 @@ const setupQuestions = [
     options: ["Germany", "U.K", "Canda", "Other"],
   },
   {
-    id: "field_of_Interest ",
+    id: "field_of_Interest",
     content:
       "🤔What course or field are you most interested in studying abroad?",
   },
@@ -66,6 +70,9 @@ const setupQuestions = [
   },
 ];
 
+type ProfileSetupScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;
+
 const ChatbotAvatar = () => (
   <View style={styles.avatarBubble}>
     <Bot size={18} color="#fcf9f8" />
@@ -79,6 +86,8 @@ const UserAvatar = () => (
 );
 
 export default function ProfileSetup() {
+  isUserLogin();
+  const navigation = useNavigation<ProfileSetupScreenNavigationProp>();
   const dispatch = useDispatch();
 
   const [messages, setMessages] = useState<Message[]>([
@@ -104,6 +113,7 @@ export default function ProfileSetup() {
 
   const handleSend = () => {
     if (input.trim() === "") return;
+
     startTransition(async () => {
       const newMessages = {
         id: uuid.v4(),
@@ -120,55 +130,74 @@ export default function ProfileSetup() {
       setAnswers(newAnswers);
       setInput("");
 
-      if (Object.keys(newAnswers).length === setupQuestions.length) {
-        const {
-          DOB,
-          country,
-          destination,
-          field_of_Interest,
-          education,
-          GPA,
-          experience,
-          budget,
-        } = newAnswers;
-        const res = await axios.post(`${process.env.API_URL}/api/login`, {
-          userId: userInfo.id,
-          DOB,
-          country,
-          destination,
-          field_of_Interest,
-          education,
-          GPA,
-          experience,
-          budget,
-        });
+      try {
+        if (Object.keys(newAnswers).length === setupQuestions.length) {
+          const {
+            DOB,
+            country,
+            destination,
+            field_of_Interest,
+            education,
+            GPA,
+            experience,
+            budget,
+          } = newAnswers;
 
-        const { success, message } = res.data;
-        if (!success) {
+          const res = await axios.post(
+            `${process.env.API_URL}/api/create-profile`,
+            {
+              userId: userInfo.id,
+              DOB,
+              country,
+              destination,
+              field_of_Interest,
+              education,
+              GPA,
+              experience,
+              budget,
+            }
+          );
+
+          const { success, message } = res.data;
+
+          if (!success) {
+            Toast.show({
+              type: "error",
+              text1: message || "Profile creation failed.",
+            });
+            return;
+          }
+
           Toast.show({
-            type: "error",
-            text1: message,
+            type: "success",
+            text1: message || "Profile created successfully!",
           });
+
+          dispatch(setIsFetch());
+          navigation.push("Home");
+          return;
         }
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: uuid.v4(),
+            sender: "bot",
+            content: setupQuestions[step + 1].content,
+            options: setupQuestions[step + 1].options,
+          },
+        ]);
+
+        setStep((prev) => prev + 1);
+      } catch (error: any) {
+        console.error("Error submitting profile data:", error.message);
         Toast.show({
-          type: "success",
-          text1: message,
+          type: "error",
+          text1: "Something went wrong!",
+          text2:
+            error?.response?.data?.message || error.message || "Unknown error",
         });
-        dispatch(setIsFetch());
-        return;
       }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: uuid.v4(),
-          sender: "bot",
-          content: setupQuestions[step + 1].content,
-          options: setupQuestions[step + 1].options,
-        },
-      ]);
-
-      setStep((prev) => prev + 1);
     });
   };
 
@@ -177,7 +206,15 @@ export default function ProfileSetup() {
   }, [messages]);
 
   if (isPending) {
-    return <BotLoader variant="dots" />;
+    return (
+      <View style={{ flex: 1, paddingTop: 50, paddingHorizontal: 16 }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <BotLoader variant="dots" />
+        </View>
+      </View>
+    );
   }
   return (
     <KeyboardAvoidingView

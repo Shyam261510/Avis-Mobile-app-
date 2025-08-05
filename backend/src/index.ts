@@ -9,6 +9,10 @@ import imageKitAuthRouter from "./routes/imagekit_auth";
 import uploadDocumentRouter from "./routes/uploadDocument";
 import getDocumentRouter from "./routes/getUploadedDocument";
 import createProfileRouter from "./routes/create-profile";
+import getProfileInfoRouter from "./routes/get-profile-info";
+
+import { isUserExists } from "./middleware/isUserExit";
+
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -17,6 +21,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(
@@ -32,19 +37,21 @@ app.use("/api/signup", singupRouter);
 
 app.use("/api/login", loginRouter);
 
-app.use("/api/createMessage", createMessageRouter);
+app.use("/api/createMessage", isUserExists, createMessageRouter);
 
-app.use("/api/getMessages", getMessagesRoute);
+app.use("/api/getMessages", isUserExists, getMessagesRoute);
 
 app.use("/api/getUserInfo", getUserInfo);
 
 app.use("/api/imageKitAuth", imageKitAuthRouter);
 
-app.use("/api/uploadDocument", uploadDocumentRouter);
+app.use("/api/uploadDocument", isUserExists, uploadDocumentRouter);
 
-app.use("/api/getDocuments", getDocumentRouter);
+app.use("/api/getDocuments", isUserExists, getDocumentRouter);
 
-app.use("/api/create-profile", createProfileRouter);
+app.use("/api/create-profile", isUserExists, createProfileRouter);
+
+app.use("/api/get-profile-info", isUserExists, getProfileInfoRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
@@ -53,7 +60,7 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
+  console.error("Internal server error ", err.stack);
   res.status(500).json({ message: "Internal server error" });
 });
 

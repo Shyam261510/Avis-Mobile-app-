@@ -6,11 +6,6 @@ router.get("/", async (req: Request, res: Response): Promise<any> => {
   console.log("calling /api/getMessages");
   try {
     const userId = req.query.userId as string;
- 
-
-    if (!userId) {
-      return res.json({ success: false, message: "Missing applicantId" });
-    }
 
     const chats =
       (await prisma.chat.findMany({

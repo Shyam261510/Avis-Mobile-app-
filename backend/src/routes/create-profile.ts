@@ -5,11 +5,12 @@ import { prisma } from "../libs/prisma";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
-  console.log("Calling login /api/create-profile");
+  console.log("Calling  /api/create-profile");
   try {
     const body = req.body;
 
     const result = profileSetupSchema.safeParse(body);
+
     if (!result.success) {
       const errorMessage = JSON.parse(result.error.message)[0].message;
       return res.status(400).json({ success: false, message: errorMessage });
@@ -26,7 +27,7 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
       experience,
       budget,
     } = result.data;
-
+    console.log(result.data);
     await prisma.profileInfo.create({
       data: {
         userId,

@@ -16,7 +16,7 @@ import Spinner from "../componets/Spinner";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../store/dataSlice";
+import { setIsFetch, setUserInfo } from "../store/dataSlice";
 export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -27,41 +27,49 @@ export default function LoginScreen() {
   });
 
   const [isPending, startTransition] = useTransition();
-  function loginHandler() {
+
+  async function loginHandler() {
     const { email, password } = formData;
 
     startTransition(async () => {
       try {
-        const res = await axios.post(`${process.env.API_URL}/api/login`, {
+        const response = await axios.post(`${process.env.API_URL}/api/login`, {
           email,
           password,
         });
 
-        const { success, message, token, user, profile_info } = res.data;
+        const { success, message, token, user } = response.data;
 
         if (!success) {
-          Toast.show({
+          return Toast.show({
             type: "error",
             text1: message,
           });
-          return;
         }
+
+        // Save token and update redux state
         await AsyncStorage.setItem("authToken", token);
-      
+        dispatch(setUserInfo(user));
+        dispatch(setIsFetch());
+
+        // Navigate based on profile completion
+        if (!user.profileInfo) {
+          navigation.navigate("ProfileSetup");
+        } else {
+          navigation.navigate("Home");
+        }
+
         Toast.show({
           type: "success",
           text1: message,
         });
-        dispatch(setUserInfo(user));
-        if(!profile_info){
-          navigation.navigate("ProfileSetup")
-        }
-        navigation.navigate("Home");
-      } catch (error: any) {
+      } catch (err: any) {
+        const errorMessage =
+          err.response?.data?.message || err.message || "Something went wrong";
         Toast.show({
           type: "error",
-          text1: "Sigin failed",
-          text2: error.response?.data?.message || error.message,
+          text1: "Sign-in failed",
+          text2: errorMessage,
         });
       }
     });

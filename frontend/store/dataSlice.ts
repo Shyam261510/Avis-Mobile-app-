@@ -6,7 +6,6 @@ export interface UserInfo {
   username: string;
   botPressUserKey?: string;
   createdAt: Date;
-  profileInfo: ProfileSetup;
   chat: Chat[];
 }
 
@@ -37,7 +36,7 @@ export interface Document {
   uri: string;
   documentTitle: string;
 }
-export interface ProfileSetup {
+export interface ProfileInfo {
   id: string;
   DOB: string;
   country: string;
@@ -53,6 +52,7 @@ const initialState = {
   userInfo: {} as UserInfo,
   isFetch: false as boolean,
   document: [] as Document[],
+  profileInfo: {} as ProfileInfo,
 };
 
 const dataSlice = createSlice({
@@ -68,8 +68,13 @@ const dataSlice = createSlice({
     setDocuments: (state, action: PayloadAction<Document[]>) => {
       state.document = action.payload;
     },
+    setProfileInfo: (state, action: PayloadAction<ProfileInfo>) => {
+      state.profileInfo = action.payload;
+    },
+    removeState: () => initialState,
   },
 });
-export const { setUserInfo, setIsFetch, setDocuments } = dataSlice.actions;
+export const { setUserInfo, setIsFetch, setDocuments, setProfileInfo } =
+  dataSlice.actions;
 
 export default dataSlice.reducer;

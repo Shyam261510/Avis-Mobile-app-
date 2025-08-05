@@ -17,15 +17,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { RootStackParamList } from "../App";
 import axios from "axios";
-import {
-  BotMessage,
-  UserInfo,
-  Chat as ChatType,
-  Message,
-} from "../store/dataSlice";
-import TypingIndicator from "../componets/TypingIndicator";
+import { Chat as ChatType, Message } from "../store/dataSlice";
+
+import BotLoader from "../componets/BotLoader";
+import isUserLogin from "../hook/isUserLogin";
 
 const Chat = () => {
+  isUserLogin();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -177,7 +175,7 @@ const Chat = () => {
                     <Text style={styles.messageTextLeft}>
                       {messageInfo.botMessages[0].botResponse ===
                       "typing..." ? (
-                        <TypingIndicator />
+                        <BotLoader variant="typing" />
                       ) : (
                         messageInfo.botMessages[0].botResponse
                       )}
