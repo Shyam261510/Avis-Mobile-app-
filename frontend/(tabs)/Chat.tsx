@@ -20,10 +20,10 @@ import axios from "axios";
 import { Chat as ChatType, Message } from "../store/dataSlice";
 
 import BotLoader from "../componets/BotLoader";
-import isUserLogin from "../hook/isUserLogin";
+import { useUserLoginRedirect } from "../hook/useUserLoginRedirect";
 
 const Chat = () => {
-  isUserLogin();
+  const isLoggedIn = useUserLoginRedirect();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -63,6 +63,7 @@ const Chat = () => {
   useEffect(() => {
     getMessage();
   }, [userInfo.id]);
+
   async function sendMessage() {
     try {
       await axios.post(`${process.env.API_URL!}/api/createMessage`, {
@@ -107,6 +108,10 @@ const Chat = () => {
   //     </View>
   //   );
   // }
+  if (!isLoggedIn) {
+    navigation.replace("Login");
+    return null;
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

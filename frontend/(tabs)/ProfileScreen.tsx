@@ -16,11 +16,13 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import { useUserLoginRedirect } from "../hook/useUserLoginRedirect";
 
 type ProfileScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
 export default function ProfileScreen() {
+  const isLoggedIn = useUserLoginRedirect();
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
   const profileInfo = useSelector(
@@ -46,7 +48,10 @@ export default function ProfileScreen() {
       console.error("Error clearing auth token:", error);
     }
   };
-
+  if (!isLoggedIn) {
+    navigation.replace("Login");
+    return null;
+  }
   return (
     <ScrollView
       style={styles.container}

@@ -26,7 +26,7 @@ export default function SignUp() {
   });
 
   const [isPending, startTransition] = useTransition();
-  console.log(`${process.env.API_URL}/api/signup`);
+
   function signupHandler() {
     const { username, email, password, phone } = formData;
 

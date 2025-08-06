@@ -21,7 +21,7 @@ import { setIsFetch } from "../store/dataSlice";
 import { RootStackParamList } from "../App";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import isUserLogin from "../hook/isUserLogin";
+
 
 type Message = {
   id: string;
@@ -86,7 +86,7 @@ const UserAvatar = () => (
 );
 
 export default function ProfileSetup() {
-  isUserLogin();
+
   const navigation = useNavigation<ProfileSetupScreenNavigationProp>();
   const dispatch = useDispatch();
 
@@ -216,6 +216,8 @@ export default function ProfileSetup() {
       </View>
     );
   }
+
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

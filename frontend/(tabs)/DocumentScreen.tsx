@@ -21,7 +21,11 @@ import Spinner from "../componets/Spinner";
 import { Document, setDocuments } from "../store/dataSlice";
 import Pdf from "react-native-pdf";
 import * as WebBrowser from "expo-web-browser";
-import isUserLogin from "../hook/isUserLogin";
+import { useUserLoginRedirect } from "../hook/useUserLoginRedirect";
+
+import { RootStackParamList } from "../App";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface UploadedFile {
   fileName: string;
@@ -45,8 +49,10 @@ interface DocumentSection {
   completedCount: number;
 }
 const DocumentScreen = () => {
-  isUserLogin();
+  const isLoggedIn = useUserLoginRedirect();
   const dispatch = useDispatch();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isPending, startTransition] = useTransition();
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
   const [sections, setSections] = useState<DocumentSection[]>([
@@ -356,6 +362,11 @@ const DocumentScreen = () => {
       "https://ik.imagekit.io/fcuhugcgk/Murli_Soft_Ys9bgnBK1y.pdf"
     );
   };
+
+  if (!isLoggedIn) {
+    navigation.replace("Login");
+    return null;
+  }
 
   const totalFields = sections.reduce((acc, s) => acc + s.fields.length, 0);
   const totalCompleted = sections.reduce((acc, s) => acc + s.completedCount, 0);

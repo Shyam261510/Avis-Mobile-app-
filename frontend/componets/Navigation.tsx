@@ -122,7 +122,9 @@ const MainNavigator = () => {
       </View>
     );
   }
-  const initialRouteName = !user ? "Welcome" : "Home";
+  const initialRouteName =
+    Object.entries(user).length === 0 ? "Welcome" : "Home";
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -13,15 +13,28 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import Navbar from "../componets/Navbar";
-import isUserLogin from "../hook/isUserLogin";
+import { useUserLoginRedirect } from "../hook/useUserLoginRedirect";
 
 const HomeScreen = () => {
-  isUserLogin();
+  const isLoggedIn = useUserLoginRedirect();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
-
+  const profileInfo = useSelector(
+    (state: RootState) => state.dataSlice.profileInfo
+  );
+  console.log(profileInfo);
+  useEffect(() => {
+    if (!profileInfo) {
+      navigation.push("ProfileSetup");
+      return;
+    }
+  }, []);
+  if (!isLoggedIn) {
+    navigation.replace("Login");
+    return null;
+  }
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>

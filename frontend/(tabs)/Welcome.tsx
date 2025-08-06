@@ -10,6 +10,7 @@ type WelcomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
 export default function Welcome() {
+  
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
   const userInfo = useSelector((state: RootState) => state.dataSlice.userInfo);
   const profileInfo = useSelector(

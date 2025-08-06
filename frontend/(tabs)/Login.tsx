@@ -21,6 +21,7 @@ export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
